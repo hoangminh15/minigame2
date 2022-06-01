@@ -44,7 +44,7 @@ Monster.getOrCreateMonster = function(arg) {
 
 Monster.create = function(arg) {
     var monster = new Monster(arg);
-    g_sharedGameLayer.add(monster, TD.ZORDER.MONSTER, TD.UNIT_TAG);
+    g_sharedGameLayer.add(monster, TD.ZORDER.MONSTER, TD.UNIT_TAG.MONSTER);
     TD.CONTAINER.MONSTER.push(monster);
     return monster;
 };
@@ -57,7 +57,7 @@ Monster.preset = function() {
             monster.visible = false;
             monster.active = false;
             monster.stopAllActions();
-            // monster..unscheduleAllCallbacks();
+            // monster.unscheduleAllCallbacks();
         }
     }
 }

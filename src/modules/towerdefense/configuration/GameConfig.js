@@ -2,7 +2,7 @@ var TD = TD || {};
 
 TD.GAME_STATE = {
     HOME: 0,
-    PLAY: 1,
+    PLAYING: 1,
     OVER: 2
 }
 
@@ -14,7 +14,8 @@ TD.UNIT_TAG = {
 
 TD.CONTAINER = {
     MONSTERS: [],
-    OBSTACLES: []
+    OBSTACLES: [],
+    MAP_BACKGROUNDS: []
 }
 
 TD.PRESET_AMOUNT = {
@@ -26,6 +27,8 @@ TD.ENERGY = 10;
 
 TD.ZORDER = {
     MONSTER: 1000,
+    OBSTACLE: 1000,
+    MAP_BACKGROUND: -1000
 }
 
 TD.SOUND = false;
@@ -38,3 +41,5 @@ TD.WIDTH = 1136;
 
 TD.HEIGHT = 640;
 
+TD.MIN_OBSTACLES = 5;
+TD.MAX_OBSTACLES = 7;
