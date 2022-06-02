@@ -48,15 +48,17 @@
         "src/modules/towerdefense/configuration/MapType.js",
         "src/modules/towerdefense/configuration/MonsterType.js",
         "src/modules/towerdefense/configuration/ObstacleType.js",
+        "src/modules/towerdefense/configuration/CellType.js",
 
         "src/modules/towerdefense/layers/GameLayer.js",
         "src/modules/towerdefense/layers/GameOverLayer.js",
-        "src/modules/towerdefense/layers/Menu.js",
+        "src/modules/towerdefense/layers/MenuLayer.js",
 
         "src/modules/towerdefense/resource/Resource.js",
 
         "src/modules/towerdefense/sprites/MapBackground.js",
         "src/modules/towerdefense/sprites/Monster.js",
-        "src/modules/towerdefense/sprites/Obstacle.js"
+        "src/modules/towerdefense/sprites/Obstacle.js",
+        "src/modules/towerdefense/sprites/Cell.js"
     ]
 }

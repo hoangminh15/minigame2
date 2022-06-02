@@ -18,12 +18,25 @@ MapBackground.create = function(arg) {
     return mapBackground;
 };
 
+MapBackground.getOrCreate = function(arg) {
+    var mapBackground;
+    for (var j = 0; j < TD.CONTAINER.MAP_BACKGROUNDS; j++) {
+        mapBackground = TD.CONTAINER.MAP_BACKGROUNDS[j];
+        if (mapBackground.active === false && mapBackground.type === arg.type) {
+            mapBackground.active = true;
+            mapBackground.visible = true;
+            return mapBackground;
+        }
+    }
+    mapBackground = MapBackground.create(arg);
+    return mapBackground;
+}
+
 MapBackground.preset = function() {
     var mapBackground;
-    var numOfMap = TD.CONTAINER.MAP_BACKGROUNDS;
-    for (var j = 0; j < numOfMap; j++) {
+    for (var j = 0; j < MapType.length; j++) {
         mapBackground = MapBackground.create(MapType[j]);
         mapBackground.visible = false;
         mapBackground.active = false;
     }
-}
+};

@@ -6762,6 +6762,7 @@ vec4
  */
 cc.FileUtils = {
 
+
 /**
  * @method fullPathForFilename
  * @param {String} arg0

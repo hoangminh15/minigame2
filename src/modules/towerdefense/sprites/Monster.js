@@ -6,6 +6,7 @@ var Monster = cc.Sprite.extend({
     speed: null,
     HP: null,
     weight: null,
+    moveDirection: null,
 
     ctor: function(arg) {
         this._super("#" + arg.textureName);
@@ -13,17 +14,39 @@ var Monster = cc.Sprite.extend({
         this.speed = arg.speed;
         this.HP = arg.HP;
         this.weight = arg.weight;
+
+        this.initAnimation();
+    },
+    update: function(dt) {
+
     },
     destroy: function() {
         this.visible = false;
         this.active = false;
         this.stopAllActions();
+        this.unscheduleUpdate();
         TD.ACTIVE_MONSTERS--;
     },
     //some action. e.g: Follow specified path.
+
+    collideRect: function(x, y) {
+        var w = this.width;
+        var h = this.height;
+        return cc.rect(x - w/2, y - h/2, w, h);
+    },
+    initAnimation: function() {
+
+    }
 });
 
-Monster.getOrCreateMonster = function(arg) {
+Monster.create = function(arg) {
+    var monster = new Monster(arg);
+    g_sharedGameLayer.addChild(monster, TD.ZORDER.MONSTER, TD.UNIT_TAG.MONSTER);
+    TD.CONTAINER.MONSTER.push(monster);
+    return monster;
+};
+
+Monster.getOrCreate = function(arg) {
     var selMonster = null;
     for (var j = 0; j < TD.CONTAINER.MONSTERS.length; j++) {
         selMonster = TD.CONTAINER.MONSTERS[j];
@@ -40,13 +63,9 @@ Monster.getOrCreateMonster = function(arg) {
             return selMonster;
         }
     }
-};
-
-Monster.create = function(arg) {
-    var monster = new Monster(arg);
-    g_sharedGameLayer.add(monster, TD.ZORDER.MONSTER, TD.UNIT_TAG.MONSTER);
-    TD.CONTAINER.MONSTER.push(monster);
-    return monster;
+    selMonster = Monster.create(arg);
+    TD.ACTIVE_MONSTERS++;
+    return selMonster;
 };
 
 Monster.preset = function() {

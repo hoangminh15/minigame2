@@ -1,4 +1,4 @@
-var res = {
+var resource = {
     mapBackground_png: 'res/image/map/map_background.png',
     mapCell_png: 'res/image/map/map_cell.png',
     mapForestObstacle_png: 'res/image/map/map_forest_obstacle.png',
