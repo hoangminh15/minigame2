@@ -39,16 +39,19 @@ var Monster = cc.Sprite.extend({
     },
     initAnimation: function (arg) {
         cc.log("Enter init animation function");
-        var framesPerDirection, frameNamePrefix;
+        var framesPerDirection, frameNamePrefix, monsterName;
         if (arg.type === 0) {
             framesPerDirection = TD.FRAMES_PER_DIRECTION.BAT;
             frameNamePrefix = "monster_bat_run_00";
+            monsterName = "Bat";
         } else if (arg.type === 1) {
             framesPerDirection = TD.FRAMES_PER_DIRECTION.DARK_GIANT;
             frameNamePrefix = "monster_dark_giant_run_00";
+            monsterName = "DarkGiant";
         } else if (arg.type === 2) {
             framesPerDirection = TD.FRAMES_PER_DIRECTION.GIANT;
             frameNamePrefix = "monster_giant_run_00";
+            monsterName = "Giant";
         }
         cc.log("Frames per direction: " + framesPerDirection);
         cc.log("Prefix: " + frameNamePrefix);
@@ -64,15 +67,12 @@ var Monster = cc.Sprite.extend({
                 var frame = cc.spriteFrameCache.getSpriteFrame(frameName);
                 animationFrames.push(frame);
             }
-            // var animation = new cc.Animation(animationFrames, 0.1);
-            // var animate = cc.animate(animation);
-            // this.runAction(animate.repeatForever());
-            // cc.AnimationCache.getInstance().addAnimation(animation,"animation" + i);
             var animation = new cc.Animation(animationFrames, 0.1);
-            cc.AnimationCache.getInstance().addAnimation(animation,"animation" + TD.MOVE_DIRECTION[i]);
+
+            cc.AnimationCache.getInstance().addAnimation(animation,"animation" + monsterName + TD.MOVE_DIRECTION[i]);
         }
-        var animate = cc.animate(animation);
-        this.runAction(animate.repeatForever());
+        // var animate = cc.animate(animation);
+        // this.runAction(animate.repeatForever());
     }
 });
 

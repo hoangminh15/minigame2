@@ -65,27 +65,6 @@ TD.FRAMES_PER_DIRECTION = {
     GIANT: 16
 }
 
-TD.MOVE_DIRECTION = [
-    {
-        DOWN: 0
-    },
-    {
-        DOWN_RIGHT: 1
-    },
-    {
-        RIGHT: 2
-    },
-    {
-        UP_RIGHT: 3
-    },
-    {
-        UP: 4
-    }
-    // DOWN: 0,
-    // DOWN_RIGHT: 1,
-    // RIGHT: 2,
-    // UP_RIGHT: 3,
-    // UP: 4
-]
+TD.MOVE_DIRECTION = ["DOWN", "DOWN_RIGHT", "RIGHT", "UP_RIGHT", "UP"];
 
 TD.NUM_OF_MOVE_DIRECTIONS = 5;
