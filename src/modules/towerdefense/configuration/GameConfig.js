@@ -58,3 +58,34 @@ TD.CELL_SIZE = TD.HEIGHT/TD.CELLS_PER_EDGE;
 
 TD.MAX_CONSTANT_WIDTH = 40;
 TD.MAX_CONSTANT_HEIGHT = 40;
+
+TD.FRAMES_PER_DIRECTION = {
+    BAT: 8,
+    DARK_GIANT: 14,
+    GIANT: 16
+}
+
+TD.MOVE_DIRECTION = [
+    {
+        DOWN: 0
+    },
+    {
+        DOWN_RIGHT: 1
+    },
+    {
+        RIGHT: 2
+    },
+    {
+        UP_RIGHT: 3
+    },
+    {
+        UP: 4
+    }
+    // DOWN: 0,
+    // DOWN_RIGHT: 1,
+    // RIGHT: 2,
+    // UP_RIGHT: 3,
+    // UP: 4
+]
+
+TD.NUM_OF_MOVE_DIRECTIONS = 5;

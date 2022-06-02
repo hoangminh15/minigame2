@@ -117,9 +117,6 @@ var GameLayer = cc.Layer.extend({
             var obstacleX = mainSquareOriginX + obstacleXIndex * TD.CELL_SIZE;
             var obstacleY = obstacleYIndex * TD.CELL_SIZE;
 
-            cc.log("Ob X: " + obstacleX);
-            cc.log("Ob Y: " + obstacleY);
-
             obstacle.setPosition(cc.p(obstacleX, obstacleY));
             obstacle.setAnchorPoint(cc.p(0, 0));
             obstacle.attr({
@@ -145,6 +142,10 @@ var GameLayer = cc.Layer.extend({
         // Init map house
 
         // Init Monsters
+        // Spawn monster with an interval.
+        var randomMonsterIndex = Math.floor(Math.random() * MonsterType.length);
+        var monster = Monster.getOrCreate(MonsterType[randomMonsterIndex]);
+        monster.setPosition(cc.p(winSize.width/4, winSize.height/4));
 
 
         // Sound settings here
