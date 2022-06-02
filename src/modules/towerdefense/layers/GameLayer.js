@@ -54,15 +54,7 @@ var GameLayer = cc.Layer.extend({
         Obstacle.preset();
         MapBackground.preset();
 
-        // // Init cells
-        var randomCellTypeIndex = Math.floor(Math.random() * CellType.length);
-        var cell = new cc.Sprite("#" + CellType[randomCellTypeIndex].textureName);
-
-        cell.attr({
-            x: winSize.width/2,
-            y: winSize.height/2,
-        });
-        this.addChild(cell, TD.ZORDER.OBSTACLE);
+        // Init cells
 
         // Init map background
         var randomMapTypeIndex = Math.floor(Math.random() * MapType.length);

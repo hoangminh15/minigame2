@@ -2,13 +2,18 @@
 var Monster = cc.Sprite.extend({
     active: true,
     type: null,
+    monsterName: null,
     speed: null,
     HP: null,
     weight: null,
     moveDirection: null,
+    currentMoveDirectionIndex: 0,
+    nextMoveDirection: null,
+    currentAnimation: null,
 
     ctor: function (arg) {
         this._super("#" + arg.textureName);
+        this.monsterName = arg.monsterName;
         this.type = arg.type;
         this.speed = arg.speed;
         this.HP = arg.HP;
@@ -17,11 +22,36 @@ var Monster = cc.Sprite.extend({
         this.initAnimation(arg);
 
         //Testing move direction down
-        this.moveDirection = TD.MOVE_DIRECTION.DOWN;
+        this.moveDirection = "Down";
+        this.nextMoveDirection = "Down";
+        if (this.moveDirection === "Down") {
+            var animation = cc.AnimationCache.getInstance().getAnimation("animation" + this.monsterName + "Down");
+            var animate = cc.animate(animation);
+            this.currentAnimation = animate.repeatForever();
+            this.runAction(this.currentAnimation);
+        }
 
+        //Schedule animation update every 2 seconds.
+        this.schedule(this.updateNextMoveDirection, 2);
+        this.scheduleUpdate();
+    },
+    updateNextMoveDirection: function() {
+        this.currentMoveDirectionIndex = this.currentMoveDirectionIndex + 1;
+        var newDirectionIndex = (this.currentMoveDirectionIndex) % TD.NUM_OF_MOVE_DIRECTIONS;
+        this.nextMoveDirection = TD.MOVE_DIRECTION[newDirectionIndex];
+        cc.log(this.nextMoveDirection);
     },
     update: function (dt) {
         // Update animation based on move direction
+        if (this.nextMoveDirection !== this.moveDirection) {
+            this.stopAction(this.currentAnimation);
+            var animationName = "animation" + this.monsterName +  this.nextMoveDirection;
+            var animation = cc.AnimationCache.getInstance().getAnimation(animationName);
+            var animate = cc.animate(animation);
+            this.currentAnimation = animate.repeatForever();
+            this.runAction(this.currentAnimation);
+            this.moveDirection = this.nextMoveDirection;
+        }
     },
     destroy: function () {
         this.visible = false;
@@ -43,15 +73,12 @@ var Monster = cc.Sprite.extend({
         if (arg.type === 0) {
             framesPerDirection = TD.FRAMES_PER_DIRECTION.BAT;
             frameNamePrefix = "monster_bat_run_00";
-            monsterName = "Bat";
         } else if (arg.type === 1) {
             framesPerDirection = TD.FRAMES_PER_DIRECTION.DARK_GIANT;
             frameNamePrefix = "monster_dark_giant_run_00";
-            monsterName = "DarkGiant";
         } else if (arg.type === 2) {
             framesPerDirection = TD.FRAMES_PER_DIRECTION.GIANT;
             frameNamePrefix = "monster_giant_run_00";
-            monsterName = "Giant";
         }
         cc.log("Frames per direction: " + framesPerDirection);
         cc.log("Prefix: " + frameNamePrefix);
@@ -67,12 +94,10 @@ var Monster = cc.Sprite.extend({
                 var frame = cc.spriteFrameCache.getSpriteFrame(frameName);
                 animationFrames.push(frame);
             }
-            var animation = new cc.Animation(animationFrames, 0.1);
-
-            cc.AnimationCache.getInstance().addAnimation(animation,"animation" + monsterName + TD.MOVE_DIRECTION[i]);
+            var animation = new cc.Animation(animationFrames, 0.05);
+            var animationName = "animation" + this.monsterName + TD.MOVE_DIRECTION[i];
+            cc.AnimationCache.getInstance().addAnimation(animation, animationName);
         }
-        // var animate = cc.animate(animation);
-        // this.runAction(animate.repeatForever());
     }
 });
 
@@ -88,7 +113,7 @@ Monster.getOrCreate = function (arg) {
     for (var j = 0; j < TD.CONTAINER.MONSTERS.length; j++) {
         selMonster = TD.CONTAINER.MONSTERS[j];
 
-        if (selMonster.active === false && selMonster.monsterType === arg.monsterType) {
+        if (selMonster.active === false && selMonster.type === arg.type) {
             selMonster.speed = arg.speed;
             selMonster.HP = arg.HP;
             selMonster.weight = arg.weight;

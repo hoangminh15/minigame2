@@ -1,9 +1,9 @@
 {
     "init_cfg":{
-       "isLandscape": true,
+       "isLandscape": false,
        "isWindowTop": false,
        "name": "HelloJavascript",
-       "width": 960,
+       "width": 640,
        "height": 640,
        "entry": "main.js",
        "consolePort": 6050,
