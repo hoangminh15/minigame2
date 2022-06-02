@@ -136,8 +136,8 @@ var GameLayer = cc.Layer.extend({
         // Init Monsters
         // Spawn monster with an interval.
         var randomMonsterIndex = Math.floor(Math.random() * MonsterType.length);
-        var monster = Monster.getOrCreate(MonsterType[randomMonsterIndex]);
-        monster.setPosition(cc.p(winSize.width/4, winSize.height/4));
+        this.monster = Monster.getOrCreate(MonsterType[randomMonsterIndex]);
+        this.monster.setPosition(cc.p(TD.CELL_SIZE/2, TD.CELL_SIZE/2));
 
 
         // Sound settings here
@@ -153,10 +153,15 @@ var GameLayer = cc.Layer.extend({
     update: function(dt) {
         if (this.state === TD.GAME_STATE.PLAYING) {
             // Run update functions
+            // Update monster position
+            this.updateMonsterPosition(dt);
 
         }
     },
-
+    updateMonsterPosition: function(dt) {
+        var moveDownAction = cc.moveBy(dt, 0, dt * this.monster.speed * TD.CELL_SIZE);
+        this.monster.runAction(moveDownAction);
+    },
     collide: function(a, b) {
         var ax = a.x, ay = a.y, bx = b.x, by = b.y;
         if (Math.abs(ax - bx) > TD.MAX_CONSTANT_WIDTH || Math.abs(ay - by) > TD.MAX_CONSTANT_HEIGHT) {

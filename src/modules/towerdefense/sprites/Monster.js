@@ -35,14 +35,14 @@ var Monster = cc.Sprite.extend({
         this.schedule(this.updateNextMoveDirection, 2);
         this.scheduleUpdate();
     },
-    updateNextMoveDirection: function() {
-        this.currentMoveDirectionIndex = this.currentMoveDirectionIndex + 1;
-        var newDirectionIndex = (this.currentMoveDirectionIndex) % TD.NUM_OF_MOVE_DIRECTIONS;
-        this.nextMoveDirection = TD.MOVE_DIRECTION[newDirectionIndex];
-        cc.log(this.nextMoveDirection);
-    },
+
     update: function (dt) {
         // Update animation based on move direction
+        this.updateMonsterAnimation();
+        this.updateMonsterPosition(dt);
+    },
+
+    updateMonsterAnimation: function() {
         if (this.nextMoveDirection !== this.moveDirection) {
             this.stopAction(this.currentAnimation);
             var animationName = "animation" + this.monsterName +  this.nextMoveDirection;
@@ -52,6 +52,46 @@ var Monster = cc.Sprite.extend({
             this.runAction(this.currentAnimation);
             this.moveDirection = this.nextMoveDirection;
         }
+    },
+
+    updateMonsterPosition: function(dt) {
+
+    },
+
+    initAnimation: function (arg) {
+        cc.log("Enter init animation function");
+        var framesPerDirection, frameNamePrefix, monsterName;
+        if (arg.type === 0) {
+            framesPerDirection = TD.FRAMES_PER_DIRECTION.BAT;
+            frameNamePrefix = "monster_bat_run_00";
+        } else if (arg.type === 1) {
+            framesPerDirection = TD.FRAMES_PER_DIRECTION.DARK_GIANT;
+            frameNamePrefix = "monster_dark_giant_run_00";
+        } else if (arg.type === 2) {
+            framesPerDirection = TD.FRAMES_PER_DIRECTION.GIANT;
+            frameNamePrefix = "monster_giant_run_00";
+        }
+        for (var i = 0; i < TD.NUM_OF_MOVE_DIRECTIONS; i++) {
+            var animationFrames = [];
+            for (var j = 0; j < framesPerDirection; j++) {
+                var frameIndex = (i*framesPerDirection+j);
+                if (frameIndex < 10) {
+                    frameIndex = "0" + frameIndex;
+                }
+                var frameName = frameNamePrefix + frameIndex + ".png";
+                var frame = cc.spriteFrameCache.getSpriteFrame(frameName);
+                animationFrames.push(frame);
+            }
+            var animation = new cc.Animation(animationFrames, 0.05);
+            var animationName = "animation" + this.monsterName + TD.MOVE_DIRECTION[i];
+            cc.AnimationCache.getInstance().addAnimation(animation, animationName);
+        }
+    },
+    updateNextMoveDirection: function() {
+        this.currentMoveDirectionIndex = this.currentMoveDirectionIndex + 1;
+        var newDirectionIndex = (this.currentMoveDirectionIndex) % TD.NUM_OF_MOVE_DIRECTIONS;
+        this.nextMoveDirection = TD.MOVE_DIRECTION[newDirectionIndex];
+        cc.log(this.nextMoveDirection);
     },
     destroy: function () {
         this.visible = false;
@@ -66,38 +106,6 @@ var Monster = cc.Sprite.extend({
         var w = this.width;
         var h = this.height;
         return cc.rect(x - w / 2, y - h / 2, w, h);
-    },
-    initAnimation: function (arg) {
-        cc.log("Enter init animation function");
-        var framesPerDirection, frameNamePrefix, monsterName;
-        if (arg.type === 0) {
-            framesPerDirection = TD.FRAMES_PER_DIRECTION.BAT;
-            frameNamePrefix = "monster_bat_run_00";
-        } else if (arg.type === 1) {
-            framesPerDirection = TD.FRAMES_PER_DIRECTION.DARK_GIANT;
-            frameNamePrefix = "monster_dark_giant_run_00";
-        } else if (arg.type === 2) {
-            framesPerDirection = TD.FRAMES_PER_DIRECTION.GIANT;
-            frameNamePrefix = "monster_giant_run_00";
-        }
-        cc.log("Frames per direction: " + framesPerDirection);
-        cc.log("Prefix: " + frameNamePrefix);
-        for (var i = 0; i < TD.NUM_OF_MOVE_DIRECTIONS; i++) {
-            var animationFrames = [];
-            for (var j = 0; j < framesPerDirection; j++) {
-                var frameIndex = (i*framesPerDirection+j);
-                if (frameIndex < 10) {
-                    frameIndex = "0" + frameIndex;
-                }
-                var frameName = frameNamePrefix + frameIndex + ".png";
-                cc.log(frameName);
-                var frame = cc.spriteFrameCache.getSpriteFrame(frameName);
-                animationFrames.push(frame);
-            }
-            var animation = new cc.Animation(animationFrames, 0.05);
-            var animationName = "animation" + this.monsterName + TD.MOVE_DIRECTION[i];
-            cc.AnimationCache.getInstance().addAnimation(animation, animationName);
-        }
     }
 });
 
