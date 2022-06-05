@@ -12,6 +12,7 @@ var GameLayer = cc.Layer.extend({
 
     mapBackground: null,
     obstacles: [],
+    waypoints: [[0, 0], [2, 0], [2, 4], [5, 4], [5, 6], [6, 6]],
 
     ctor: function() {
         this._super();
@@ -99,15 +100,18 @@ var GameLayer = cc.Layer.extend({
                 obstacle.visible = true;
             }
 
-            var obstacleXIndex = Math.floor(Math.random() * TD.CELLS_PER_EDGE)
-            var obstacleYIndex = Math.floor(Math.random() * TD.CELLS_PER_EDGE);
+            var obstacleRIndex = Math.floor(Math.random() * TD.CELLS_PER_EDGE)
+            var obstacleCIndex = Math.floor(Math.random() * TD.CELLS_PER_EDGE);
+            this.obstacles.push([obstacleRIndex, obstacleCIndex]);
+            cc.log("Game layer obstacle index X: " + obstacleRIndex);
+            cc.log("Game Layer obstacle index Y: " + obstacleCIndex)
             // Check Validity: Obstacle can't be adjacent with any others.
             // Check Validity: Obstacle can't be at 1, 6
             // Check Validity: Obstacle can be on the same diagonal, but shouldn't block the path.
             // i.e: there's no 2 obstacles adjacent to (0, 0) cell and (6, 6) cell
 
-            var obstacleX = mainSquareOriginX + obstacleXIndex * TD.CELL_SIZE;
-            var obstacleY = obstacleYIndex * TD.CELL_SIZE;
+            var obstacleY = obstacleRIndex * TD.CELL_SIZE;
+            var obstacleX = mainSquareOriginX + obstacleCIndex * TD.CELL_SIZE;
 
             obstacle.setPosition(cc.p(obstacleX, obstacleY));
             obstacle.setAnchorPoint(cc.p(0, 0));
@@ -121,31 +125,30 @@ var GameLayer = cc.Layer.extend({
             })
         }
 
+        cc.log(this.obstacles[0]);
+        //Testing static
+        var waypointsPath = new PathFindingHelper(this.obstacles).findPath();
 
-        // Set Obstacle Position
-        // for (var i = 0; i < TD.CONTAINER.OBSTACLES.length; i++) {
-        //     obstacle = TD.CONTAINER.OBSTACLES[i];
-        //     if (obstacle.active === true) {
-        //         obstacle.setPosition(cc.p(winSize.width * Math.random(), winSize.height * Math.random()));
-        //     }
-        // }
-
+        //Testing
+        // this.waypoints = [[0, 0], [1, 0], [1, 1], [1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [5, 3], [5, 4], [6, 4], [6, 5], [6, 6]];
+        // this.waypoints = [[0, 0], [6, 0], [6, 6]]
+        if (waypointsPath !== -1) {
+            this.waypoints = waypointsPath;
+            cc.log("Final result ")
+            for (var i = 0; i < this.waypoints.length; i++) {
+                cc.log("Waypoint: " + this.waypoints[i]);
+            }
+        }
 
         // Init map house
 
-        // Init Monsters
-        // Spawn monster with an interval.
-        var randomMonsterIndex = Math.floor(Math.random() * MonsterType.length);
-        this.monster = Monster.getOrCreate(MonsterType[randomMonsterIndex]);
-        this.monster.setPosition(cc.p(TD.CELL_SIZE/2, TD.CELL_SIZE/2));
-
-
         // Sound settings here
 
-        //Add listener or logic functions.
+        // Add listener or logic functions.
 
         // Schedule update here
         this.scheduleUpdate();
+        this.schedule(this.spawnMonsters, 2);
 
         return true;
     },
@@ -153,15 +156,15 @@ var GameLayer = cc.Layer.extend({
     update: function(dt) {
         if (this.state === TD.GAME_STATE.PLAYING) {
             // Run update functions
-            // Update monster position
-            this.updateMonsterPosition(dt);
 
         }
     },
-    updateMonsterPosition: function(dt) {
-        var moveDownAction = cc.moveBy(dt, 0, dt * this.monster.speed * TD.CELL_SIZE);
-        this.monster.runAction(moveDownAction);
+    spawnMonsters: function() {
+        var randomMonsterIndex = Math.floor(Math.random() * MonsterType.length);
+        var monster = Monster.getOrCreate(MonsterType[randomMonsterIndex], this.waypoints);
+        monster.setPosition(cc.p(TD.CELL_SIZE/2, TD.CELL_SIZE/2 - 15));
     },
+
     collide: function(a, b) {
         var ax = a.x, ay = a.y, bx = b.x, by = b.y;
         if (Math.abs(ax - bx) > TD.MAX_CONSTANT_WIDTH || Math.abs(ay - by) > TD.MAX_CONSTANT_HEIGHT) {
