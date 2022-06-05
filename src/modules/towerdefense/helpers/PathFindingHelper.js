@@ -1,10 +1,8 @@
-const N = 3;
-
 var PathFindingHelper = cc.Class.extend({
 
     waypoints: [],
 
-    ctor: function(obstacles) {
+    ctor: function (obstacles) {
         this.rq = new Queue();
         this.cq = new Queue();
         this.moveCount = 0;
@@ -17,33 +15,34 @@ var PathFindingHelper = cc.Class.extend({
         for (var i = 0; i < TD.CELLS_PER_EDGE; i++) {
             this.parent[i] = new Array(TD.CELLS_PER_EDGE);
         }
-        // this.mapMatrix = [
-        //     ["S", ".", "."],
-        //     ["#", ".", "."],
-        //     ["#", "#", "E"],
-        // ];
+
         this.mapMatrix = new Array(TD.CELLS_PER_EDGE);
         for (var i = 0; i < TD.CELLS_PER_EDGE; i++) {
             this.mapMatrix[i] = new Array(TD.CELLS_PER_EDGE).fill('.');
         }
-        this.mapMatrix[TD.CELLS_PER_EDGE-1][TD.CELLS_PER_EDGE-1] = "E";
+        this.mapMatrix[TD.CELLS_PER_EDGE - 1][TD.CELLS_PER_EDGE - 1] = "E";
 
-        for (var i = 0; i < obstacles.length; i++) {
-            var obstacle = obstacles[i];
-            var x = obstacle[0];
-            var y = obstacle[1];
-            cc.log("obstacle x: " + x);
-            cc.log("obstacle y: " + y);
-            this.mapMatrix[x][y] = "#";
-        }
-
-        this.dr = [-1, 1, 0, 0];
-        this.dc = [0, 0, 1, -1];
 
         this.visited = new Array(TD.CELLS_PER_EDGE);
         for (var i = 0; i < TD.CELLS_PER_EDGE; i++) {
             this.visited[i] = new Array(TD.CELLS_PER_EDGE).fill(false);
         }
+
+        // Direction leading to a specific node
+        this.lastDirection = new Array(TD.CELLS_PER_EDGE);
+        for (var i = 0; i < TD.CELLS_PER_EDGE; i++) {
+            this.lastDirection[i] = new Array(TD.CELLS_PER_EDGE);
+        }
+
+        for (var i = 0; i < obstacles.length; i++) {
+            var obstacle = obstacles[i];
+            var x = obstacle[0];
+            var y = obstacle[1];
+            this.mapMatrix[x][y] = "#";
+        }
+
+        this.dr = [-1, 1, 0, 0];
+        this.dc = [0, 0, 1, -1];
 
         var r, c;
         var result;
@@ -56,8 +55,6 @@ var PathFindingHelper = cc.Class.extend({
         while (this.rq.size() > 0) {
             r = this.rq.dequeue();
             c = this.cq.dequeue();
-            // cc.log("r " + r);
-            // cc.log("c " + c);
             if (this.mapMatrix[r][c] === "E") {
                 this.isEndReached = true;
                 break;
@@ -70,48 +67,73 @@ var PathFindingHelper = cc.Class.extend({
                 this.moveCount++;
             }
         }
+
         if (this.isEndReached) result = this.moveCount;
         else result = -1;
 
 
+        // Create waypoints if there's a path
         if (result !== -1) {
             this.waypoints.push([r, c]);
-            while (r !== 0 && c !== 0) {
+            while (r !== 0 || c !== 0) {
                 var parentPos = this.parent[r][c];
                 r = parentPos.x;
                 c = parentPos.y;
                 this.waypoints.push([r, c]);
             }
-            r = 0;
-            c = 0;
-            this.waypoints.push([r, c]);
+            // r = 0;
+            // c = 0;
+            // this.waypoints.push([r, c]);
         }
         this.waypoints = this.waypoints.reverse();
-        cc.log("waypoints m: " + this.waypoints.length);
-        cc.log("waypoints n: " + this.waypoints[0].length);
     },
-    findPath: function() {
+    findPath: function () {
         return this.waypoints;
     },
     exploreNeighbours: function (r, c) {
-        for (var i = 0; i < 4; i++) {
-            var rr = r + this.dr[i];
-            var cc = c + this.dc[i];
-
-            if (rr < 0 || cc < 0) continue;
-            if (rr >= TD.CELLS_PER_EDGE || cc >= TD.CELLS_PER_EDGE) continue;
-
-            if (this.visited[rr][cc]) continue;
-            if (this.mapMatrix[rr][cc] === "#") continue;
-
-            this.rq.enqueue(rr);
-            this.cq.enqueue(cc);
-
-            this.parent[rr][cc] = {x: r, y: c};
-
-            this.visited[rr][cc] = true;
-            this.nodesInNextLayer++;
+        var rr, cc;
+        var ld;
+        if ((r === 0 && c === 0) === false) {
+            ld = this.lastDirection[r][c];
+            rr = r + this.dr[ld];
+            cc = c + this.dc[ld];
+            if (this.checkValidMove(rr, cc) === true) {
+                this.handleValidMove(rr, cc, r, c, ld);
+            }
         }
+
+        for (var i = 0; i < 4; i++) {
+            if (i !== ld) {
+                rr = r + this.dr[i];
+                cc = c + this.dc[i];
+
+                if (this.checkValidMove(rr, cc) === false) {
+                    continue;
+                }
+                this.handleValidMove(rr, cc, r, c, i);
+            }
+        }
+
+    },
+    checkValidMove: function (rr, cc) {
+        if (rr < 0 || cc < 0) return false;
+        if (rr >= TD.CELLS_PER_EDGE || cc >= TD.CELLS_PER_EDGE) return false;
+
+        if (this.visited[rr][cc]) return false;
+        if (this.mapMatrix[rr][cc] === "#") return false;
+
+        return true;
+    },
+
+    handleValidMove: function(rr, cc, r, c, direction) {
+        this.rq.enqueue(rr);
+        this.cq.enqueue(cc);
+
+        this.parent[rr][cc] = {x: r, y: c};
+        this.lastDirection[rr][cc] = direction;
+
+        this.visited[rr][cc] = true;
+        this.nodesInNextLayer++;
     }
 });
 

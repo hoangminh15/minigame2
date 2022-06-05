@@ -12,8 +12,8 @@ var Cell = cc.Sprite.extend({
 
 Cell.create = function(arg) {
     var cell = new Cell(arg);
+    g_sharedGameLayer.addChild(cell, TD.ZORDER.CELL, TD.UNIT_TAG.CELL);
     TD.CONTAINER.CELLS.push(cell);
-    g_sharedGameLayer.addChild(cell, TD.ZORDER.CELLS);
     return cell;
 };
 
@@ -33,9 +33,12 @@ Cell.getOrCreate = function(arg) {
 
 Cell.preset = function() {
     var cell;
-    for (var j = 0; j < MapType.length; j++) {
-        cell = Cell.create(MapType[j]);
-        cell.visible = false;
-        cell.active = false;
+    for (var i = 0; i < TD.MAX_CELLS; i++) {
+        for (var j = 0; j < MapType.length; j++) {
+            cell = Cell.create(MapType[j]);
+            TD.CONTAINER.CELLS.push(cell);
+            cell.visible = false;
+            cell.active = false;
+        }
     }
 };
