@@ -67,7 +67,9 @@ var GameLayer = cc.Layer.extend({
         this.mapBackground.attr({
             x: winSize.width / 2,
             y: winSize.height / 2,
+            // scaleX: winSize.width / this.mapBackground.width,
             scaleX: winSize.width / this.mapBackground.width,
+
             scaleY: winSize.height / this.mapBackground.height
         });
 
@@ -214,17 +216,16 @@ var GameLayer = cc.Layer.extend({
             // i.e: there's no 2 obstacles adjacent to (0, 0) cell and (6, 6) cell
 
             var obstacleY = obstacleRIndex * TD.CELL_SIZE;
-            var obstacleX = this.mainSquareOriginX + obstacleCIndex * TD.CELL_SIZE;
+            var obstacleX = this.mainSquareOriginX + obstacleCIndex * (TD.CELL_SIZE);
 
             obstacle.setPosition(cc.p(obstacleX, obstacleY));
-            obstacle.setAnchorPoint(cc.p(0, 0));
             obstacle.attr({
-                x: obstacleX,
-                y: obstacleY,
+                x: obstacleX + 10,
+                y: obstacleY + 10,
                 anchorX: 0,
                 anchorY: 0,
-                scaleX: TD.CELL_SIZE / obstacle.width,
-                scaleY: TD.CELL_SIZE / obstacle.height
+                // scaleX: TD.CELL_SIZE / obstacle.width,
+                // scaleY: TD.CELL_SIZE / obstacle.height
             })
         }
     },
