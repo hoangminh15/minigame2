@@ -12,7 +12,8 @@ var GameLayer = cc.Layer.extend({
 
     mapBackground: null,
     mapHouse: null,
-    mapHouseGatePlayer: null,
+    mapMonsterGatePlayer: null,
+    mapMonsterGateEnemy: null,
     obstacles: [],
     waypoints: [],
 
@@ -25,6 +26,11 @@ var GameLayer = cc.Layer.extend({
 
         var winSize = cc.winSize;
         g_sharedGameLayer = this;
+
+        this.mainSquareOriginX = (TD.WIDTH - TD.CELLS_PER_EDGE * TD.CELL_SIZE) / 2;
+        this.mainSquareDestinationX = (TD.WIDTH + TD.CELLS_PER_EDGE * TD.CELL_SIZE) / 2;
+        this.mainSquareOriginY = (TD.HEIGHT - TD.CELLS_PER_EDGE * TD.CELL_SIZE) / 2;
+        this.mainSquareDestinationY = (TD.HEIGHT + TD.CELLS_PER_EDGE * TD.CELL_SIZE) / 2;
 
         // Reset global values
         TD.CONTAINER.MONSTER = [];
@@ -69,44 +75,38 @@ var GameLayer = cc.Layer.extend({
             y: winSize.height / 2,
             // scaleX: winSize.width / this.mapBackground.width,
             scaleX: winSize.width / this.mapBackground.width,
-
             scaleY: winSize.height / this.mapBackground.height
         });
 
-        this.mapHouse = new cc.Sprite(resource.mapHouse_png);
-        this.mapHouse.attr({
-            x: TD.CELL_SIZE/2 + (TD.CELLS_PER_EDGE - 1) * TD.CELL_SIZE,
-            y: TD.CELL_SIZE/2 + (TD.CELLS_PER_EDGE - 1) * TD.CELL_SIZE
+        this.mapBackgroundOutline = cc.Sprite("#map_background_0002.png");
+        this.mapBackgroundOutline.attr({
+            x: winSize.width / 2,
+            y: winSize.height / 2 + 67,
+            scaleX: 1.1,
+            scaleY: winSize.height / this.mapBackgroundOutline.height * 1.05
         });
-        this.addChild(this.mapHouse, TD.ZORDER.MAP_BACKGROUND, TD.UNIT_TAG.BACKGROUND);
+        this.addChild(this.mapBackgroundOutline, TD.ZORDER.MAP_BACKGROUND, TD.UNIT_TAG.BACKGROUND);
 
-        this.mapHouseGatePlayer = new cc.Sprite(resource.mapMonsterGatePlayer_png);
-        this.mapHouseGatePlayer.attr({
-            x: TD.CELL_SIZE/2,
-            y: TD.CELL_SIZE/2
-        })
-        this.addChild(this.mapHouseGatePlayer, TD.ZORDER.CELL + 1, TD.UNIT_TAG.BACKGROUND)
 
-        // Draw a grid on background to position obstacles
-        var draw = new cc.DrawNode();
-        this.mainSquareOriginX = winSize.width / 2 - winSize.height / 2
-        this.mainSquareDestinationX = winSize.width / 2 + winSize.height / 2;
+        // // Draw a grid on background to position obstacles
+        // var draw = new cc.DrawNode();
+        //
+        // var mainSquareOrigin = cc.p(this.mainSquareOriginX, this.mainSquareOriginY);
+        // var mainSquareDestination = cc.p(this.mainSquareDestinationX, this.mainSquareDestinationY);
+        //
+        // draw.drawRect(mainSquareOrigin, mainSquareDestination, null, 2, cc.color("#000"));
+        // for (var i = 0; i < TD.CELLS_PER_EDGE; i++) {
+        //     for (var j = 0; j < TD.CELLS_PER_EDGE; j++) {
+        //         var origin = cc.p(this.mainSquareOriginX + i * TD.CELL_SIZE, this.mainSquareOriginY + j * TD.CELL_SIZE);
+        //         var destination = cc.p(this.mainSquareOriginX + (i + 1) * TD.CELL_SIZE, this.mainSquareDestinationY + (j + 1) * TD.CELL_SIZE);
+        //         var fillColor = null;
+        //         var lineWidth = 1;
+        //         var lineColor = cc.color("#000");
+        //         draw.drawRect(origin, destination, fillColor, lineWidth, lineColor);
+        //     }
+        // }
+        // this.addChild(draw, TD.ZORDER.MAP_BACKGROUND, TD.UNIT_TAG.BACKGROUND);
 
-        var mainSquareOrigin = cc.p(this.mainSquareOriginX, 0);
-        var mainSquareDestination = cc.p(this.mainSquareDestinationX, winSize.height);
-
-        draw.drawRect(mainSquareOrigin, mainSquareDestination, null, 2, cc.color("#000"));
-        for (var i = 0; i < TD.CELLS_PER_EDGE; i++) {
-            for (var j = 0; j < TD.CELLS_PER_EDGE; j++) {
-                var origin = cc.p(this.mainSquareOriginX + i * TD.CELL_SIZE, j * TD.CELL_SIZE);
-                var destination = cc.p(this.mainSquareOriginX + (i + 1) * TD.CELL_SIZE, (j + 1) * TD.CELL_SIZE);
-                var fillColor = null;
-                var lineWidth = 1;
-                var lineColor = cc.color("#000");
-                draw.drawRect(origin, destination, fillColor, lineWidth, lineColor);
-            }
-        }
-        this.addChild(draw, TD.ZORDER.MAP_BACKGROUND, TD.UNIT_TAG.BACKGROUND);
 
         // Find path based on obstacles placement
         var waypointsPath = -1;
@@ -116,8 +116,8 @@ var GameLayer = cc.Layer.extend({
         }
         this.waypoints = waypointsPath;
 
-        for (var i = 0; i < TD.CELLS_PER_EDGE; i++) {
-            for (var j = 0; j < TD.CELLS_PER_EDGE; j++) {
+        for (var i = TD.CELLS_PER_EDGE - 1; i >= 0; i--) {
+            for (var j = TD.CELLS_PER_EDGE - 1; j >= 0; j--) {
                 var isWaypoint = false;
                 for (var k = 0; k < this.waypoints.length; k++) {
                     var waypoint = this.waypoints[k];
@@ -131,7 +131,7 @@ var GameLayer = cc.Layer.extend({
                 if (isWaypoint === false) {
                     var randomCellTypeIndex = Math.floor(Math.random() * CellType.length);
                     var cell = Cell.getOrCreate(CellType[randomCellTypeIndex]);
-                    var cellPosition = cc.p(j * TD.CELL_SIZE, i * TD.CELL_SIZE);
+                    var cellPosition = cc.p(this.mainSquareOriginX + j * TD.CELL_SIZE, this.mainSquareOriginY + i * TD.CELL_SIZE);
                     cell.setPosition(cellPosition);
                     cell.setAnchorPoint(cc.p(0, 0));
                 }
@@ -139,6 +139,21 @@ var GameLayer = cc.Layer.extend({
         }
 
         // Init map house
+        this.mapHouse = new cc.Sprite(resource.mapHouse_png);
+        this.mapHouse.attr({
+            x: this.mainSquareOriginX + TD.CELL_SIZE / 2 + (TD.CELLS_PER_EDGE - 1) * TD.CELL_SIZE,
+            y: this.mainSquareOriginY + TD.CELL_SIZE / 2 + (TD.CELLS_PER_EDGE - 1) * TD.CELL_SIZE + 30
+        });
+        this.addChild(this.mapHouse, TD.ZORDER.MAP_HOUSE, TD.UNIT_TAG.BACKGROUND);
+
+        this.mapMonsterGateEnemy = new cc.Sprite(resource.mapMonsterGateEnemy_png);
+        this.mapMonsterGateEnemy.attr({
+            x: this.mainSquareOriginX + TD.CELL_SIZE,
+            y: this.mainSquareOriginY + TD.CELL_SIZE / 2,
+            anchorX: 1,
+            anchorY: 1
+        })
+        this.addChild(this.mapMonsterGateEnemy, TD.ZORDER.CELL + 1, TD.UNIT_TAG.BACKGROUND)
 
         // Sound settings here
 
@@ -160,7 +175,7 @@ var GameLayer = cc.Layer.extend({
     spawnMonsters: function () {
         var randomMonsterIndex = Math.floor(Math.random() * MonsterType.length);
         var monster = Monster.getOrCreate(MonsterType[randomMonsterIndex], this.waypoints);
-        monster.setPosition(cc.p(TD.CELL_SIZE / 2, TD.CELL_SIZE / 2 - 15));
+        monster.setPosition(cc.p(this.mainSquareOriginX + TD.CELL_SIZE / 2, this.mainSquareOriginY + TD.CELL_SIZE / 2 - 5));
     },
     initObstacles: function () {
         this.obstacles = [];
@@ -215,8 +230,8 @@ var GameLayer = cc.Layer.extend({
             // Check Validity: Obstacle can be on the same diagonal, but shouldn't block the path.
             // i.e: there's no 2 obstacles adjacent to (0, 0) cell and (6, 6) cell
 
-            var obstacleY = obstacleRIndex * TD.CELL_SIZE;
             var obstacleX = this.mainSquareOriginX + obstacleCIndex * (TD.CELL_SIZE);
+            var obstacleY = this.mainSquareOriginY + obstacleRIndex * TD.CELL_SIZE + 15;
 
             obstacle.setPosition(cc.p(obstacleX, obstacleY));
             obstacle.attr({

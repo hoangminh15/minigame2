@@ -15,7 +15,7 @@
                 <key>spriteSourceSize</key>
                 <string>{1056,620}</string>
                 <key>textureRect</key>
-                <string>{{0,385},{1056,620}}</string>
+                <string>{{636,433},{1056,620}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -49,6 +49,36 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
+            <key>map_background_0002.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{636,437}</string>
+                <key>spriteSourceSize</key>
+                <string>{636,437}</string>
+                <key>textureRect</key>
+                <string>{{0,433},{636,437}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>map_background_0003.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{633,433}</string>
+                <key>spriteSourceSize</key>
+                <string>{633,433}</string>
+                <key>textureRect</key>
+                <string>{{1078,0},{633,433}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
         </dict>
         <key>metadata</key>
         <dict>
@@ -61,9 +91,9 @@
             <key>realTextureFileName</key>
             <string>map_background.png</string>
             <key>size</key>
-            <string>{1078,1005}</string>
+            <string>{1711,1053}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:4ce2ba9dfde061bde03c98f9a1be5a9b:ed6ad47505209933e7485cf9a505cc3a:4328e17f50825a9714c18ebdc51ff581$</string>
+            <string>$TexturePacker:SmartUpdate:74e3de4a1d91e6fdd2d16a0b2c003d19:f2f95cf418c7c3306ae188c4fe158552:4328e17f50825a9714c18ebdc51ff581$</string>
             <key>textureFileName</key>
             <string>map_background.png</string>
         </dict>

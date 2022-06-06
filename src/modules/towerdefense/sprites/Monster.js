@@ -125,6 +125,8 @@ var Monster = cc.Sprite.extend({
             var animationName = "animation" + this.monsterName + TD.MOVE_DIRECTION[i];
             cc.AnimationCache.getInstance().addAnimation(animation, animationName);
         }
+         // Create 3 missing animations
+        
         var testFrame = cc.spriteFrameCache.getSpriteFrame("monster_dark_giant_run_0000.png");
         var testSprite = cc.Sprite(testFrame);
         // testSprite.flippedX = !testSprite.flippedX;

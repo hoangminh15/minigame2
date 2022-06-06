@@ -7,6 +7,7 @@ var resource = {
     monsterGiantRun_png: 'res/image/monster/monster_giant_run.png',
     mapHouse_png: 'res/image/map/map_house.png',
     mapMonsterGatePlayer_png: 'res/image/map/map_monster_gate_player.png',
+    mapMonsterGateEnemy_png: 'res/image/map/map_monster_gate_enemy.png',
 
     mapBackground_plist: 'res/image/map/map_background.plist',
     mapCell_plist: 'res/image/map/map_cell.plist',
