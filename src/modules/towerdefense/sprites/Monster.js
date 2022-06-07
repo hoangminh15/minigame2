@@ -48,6 +48,7 @@ var Monster = cc.Sprite.extend({
         this.setOpacity(0);
         var fadeInAction = cc.sequence(cc.fadeIn(1.0), cc.callFunc(this.postCreation, this, arg));
         this.runAction(fadeInAction);
+
     },
     postCreation: function (arg) {
         this.initAnimation(arg);
@@ -105,7 +106,7 @@ var Monster = cc.Sprite.extend({
             this.runAction(this.currentAnimation);
             this.moveDirection = this.nextMoveDirection;
             if (this.isJustCreated) {
-                this.isJustCreated = false;  
+                this.isJustCreated = false;
             }
         }
     },
@@ -125,13 +126,6 @@ var Monster = cc.Sprite.extend({
             var animationName = "animation" + this.monsterName + TD.MOVE_DIRECTION[i];
             cc.AnimationCache.getInstance().addAnimation(animation, animationName);
         }
-         // Create 3 missing animations
-        
-        var testFrame = cc.spriteFrameCache.getSpriteFrame("monster_dark_giant_run_0000.png");
-        var testSprite = cc.Sprite(testFrame);
-        // testSprite.flippedX = !testSprite.flippedX;
-        testSprite.setPosition(cc.p(cc.winSize.width / 4, cc.winSize.height / 4));
-        g_sharedGameLayer.addChild(testSprite);
     },
     updateNextMoveDirection: function () {
         this.currentMoveDirectionIndex = this.currentMoveDirectionIndex + 1;

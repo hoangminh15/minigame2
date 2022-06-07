@@ -88,26 +88,6 @@ var GameLayer = cc.Layer.extend({
         this.addChild(this.mapBackgroundOutline, TD.ZORDER.MAP_BACKGROUND, TD.UNIT_TAG.BACKGROUND);
 
 
-        // // Draw a grid on background to position obstacles
-        // var draw = new cc.DrawNode();
-        //
-        // var mainSquareOrigin = cc.p(this.mainSquareOriginX, this.mainSquareOriginY);
-        // var mainSquareDestination = cc.p(this.mainSquareDestinationX, this.mainSquareDestinationY);
-        //
-        // draw.drawRect(mainSquareOrigin, mainSquareDestination, null, 2, cc.color("#000"));
-        // for (var i = 0; i < TD.CELLS_PER_EDGE; i++) {
-        //     for (var j = 0; j < TD.CELLS_PER_EDGE; j++) {
-        //         var origin = cc.p(this.mainSquareOriginX + i * TD.CELL_SIZE, this.mainSquareOriginY + j * TD.CELL_SIZE);
-        //         var destination = cc.p(this.mainSquareOriginX + (i + 1) * TD.CELL_SIZE, this.mainSquareDestinationY + (j + 1) * TD.CELL_SIZE);
-        //         var fillColor = null;
-        //         var lineWidth = 1;
-        //         var lineColor = cc.color("#000");
-        //         draw.drawRect(origin, destination, fillColor, lineWidth, lineColor);
-        //     }
-        // }
-        // this.addChild(draw, TD.ZORDER.MAP_BACKGROUND, TD.UNIT_TAG.BACKGROUND);
-
-
         // Find path based on obstacles placement
         var waypointsPath = -1;
         while (waypointsPath === -1) {
@@ -146,6 +126,7 @@ var GameLayer = cc.Layer.extend({
         });
         this.addChild(this.mapHouse, TD.ZORDER.MAP_HOUSE, TD.UNIT_TAG.BACKGROUND);
 
+        // Init map monster gate
         this.mapMonsterGateEnemy = new cc.Sprite(resource.mapMonsterGateEnemy_png);
         this.mapMonsterGateEnemy.attr({
             x: this.mainSquareOriginX + TD.CELL_SIZE,
@@ -162,6 +143,7 @@ var GameLayer = cc.Layer.extend({
         // Schedule update here
         this.scheduleUpdate();
         this.schedule(this.spawnMonsters, 2);
+
 
         return true;
     },

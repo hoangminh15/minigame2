@@ -1,6 +1,7 @@
 var PathFindingHelper = cc.Class.extend({
 
     waypoints: [],
+    result: null,
 
     ctor: function (obstacles) {
         this.rq = new Queue();
@@ -45,7 +46,6 @@ var PathFindingHelper = cc.Class.extend({
         this.dc = [0, 0, 1, -1];
 
         var r, c;
-        var result;
 
         this.rq.enqueue(0);
         this.cq.enqueue(0);
@@ -68,12 +68,12 @@ var PathFindingHelper = cc.Class.extend({
             }
         }
 
-        if (this.isEndReached) result = this.moveCount;
-        else result = -1;
+        if (this.isEndReached) this.result = this.moveCount;
+        else this.result = -1;
 
 
         // Create waypoints if there's a path
-        if (result !== -1) {
+        if (this.result !== -1) {
             this.waypoints.push([r, c]);
             while (r !== 0 || c !== 0) {
                 var parentPos = this.parent[r][c];
@@ -81,13 +81,11 @@ var PathFindingHelper = cc.Class.extend({
                 c = parentPos.y;
                 this.waypoints.push([r, c]);
             }
-            // r = 0;
-            // c = 0;
-            // this.waypoints.push([r, c]);
+            this.waypoints = this.waypoints.reverse();
         }
-        this.waypoints = this.waypoints.reverse();
     },
     findPath: function () {
+        if (this.result === - 1) return -1;
         return this.waypoints;
     },
     exploreNeighbours: function (r, c) {
