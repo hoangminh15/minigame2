@@ -5,7 +5,7 @@ var GameOverLayer = cc.Layer.extend({
     },
 
     init: function() {
-
+        cc.log("Gameover Layer")
         return true;
     }
 })

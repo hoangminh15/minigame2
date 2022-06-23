@@ -58,6 +58,7 @@
         "src/modules/towerdefense/layers/GameLayer.js",
         "src/modules/towerdefense/layers/GameOverLayer.js",
         "src/modules/towerdefense/layers/MenuLayer.js",
+        "src/modules/towerdefense/layers/FakeGameLayer.js",
 
         "src/modules/towerdefense/resource/Resource.js",
 
